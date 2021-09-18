@@ -14,3 +14,6 @@ Each Jetson module is a computing system packaged as a plug-in unit (System on M
 JetPack bundles all of the Jetson platform software, starting with the NVIDIA® Jetson™ Linux Driver Package (L4T). L4T provides the Linux kernel, bootloader, NVIDIA drivers, flashing utilities, sample filesystem, and more for the Jetson platform.
 
 [link](https://docs.nvidia.com/jetson/archives/l4t-archived/l4t-3261/index.html#page/Tegra%20Linux%20Driver%20Package%20Development%20Guide/introduction.html#)
+
+
+https://docs.nvidia.com/jetson/jetpack/install-jetpack/index.html
