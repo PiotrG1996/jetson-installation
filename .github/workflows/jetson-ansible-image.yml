@@ -27,7 +27,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible qemu-user-static binfmt-support
 
-      - name: Create Jetson image
+      - name: Verify and Create Jetson image
         run: |
           if [ ! -f ./create-image.sh ]; then
             echo "create-image.sh not found!"
@@ -36,7 +36,7 @@ jobs:
           chmod +x create-image.sh
           sudo -E ./create-image.sh
 
-      - name: Flash Jetson image
+      - name: Verify and Flash Jetson image
         run: |
           if [ ! -f ./flash-image.sh ]; then
             echo "flash-image.sh not found!"
@@ -57,7 +57,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Clean up Jetson
+      - name: List directory contents
+        run: ls -al
+
+      - name: Verify and Clean up Jetson
         run: |
           if [ ! -f ./clean_jetson.sh ]; then
             echo "clean_jetson.sh not found!"
