@@ -555,9 +555,8 @@ docker volume rm docker_yolo
 Clone this repository with and install dependencies.
 
 ```bash
-git clone https://github.com/KalanaRatnayake/yolo_ros.git
-git clone https://github.com/KalanaRatnayake/detection_msgs.git
-cd yolo_ros
+git clone https://github.com/PiotrG1996/jetson-installation/jetson-ROS-YOLO.git
+cd jetson-ROS-YOLO
 pip3 install -r requirements.txt
 ```
 

@@ -1,0 +1,43 @@
+# Node modules
+node_modules/
+
+# Logs
+*.log
+
+# Dependency directories
+bower_components/
+
+# Build output
+/dist
+/build
+/.next
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Python-specific
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Jetson-specific files
+*.img
+*.iso
+*.tar.gz
+
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# GitHub Actions artifacts
+.github/workflows/

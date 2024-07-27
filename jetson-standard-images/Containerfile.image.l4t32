@@ -53,14 +53,14 @@ RUN mount -t proc proc rootfs/proc/ && \
     chroot rootfs /bin/bash -c "echo 'nameserver 8.8.8.8' > /etc/resolv.conf && apt update; apt install -y cuda-toolkit $L4T_PACKAGES"
 
 # Edit initrd
-WORKDIR /tmp/pythops
+WORKDIR /tmp
 #RUN gzip -d -c /build/Linux_for_Tegra/rootfs/boot/initrd > initrd
 RUN gzip -d -c /build/Linux_for_Tegra/bootloader/l4t_initrd.img > initrd
-WORKDIR /tmp/pythops/lab
+WORKDIR /tmp/jetson/lab
 RUN cpio -iv < ../initrd && \
     echo "nameserver 127.0.0.53" > etc/resolv.conf && \
     find . | cpio --create --format="newc" > ../new_initrd
-WORKDIR /tmp/pythops
+WORKDIR /tmp/jetson
 RUN gzip new_initrd && mv new_initrd.gz /build/Linux_for_Tegra/bootloader/l4t_initrd.img
 
 # Copy the script to create the image

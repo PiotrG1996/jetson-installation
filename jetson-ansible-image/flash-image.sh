@@ -1,9 +1,5 @@
 #! /bin/bash
 
-#
-# Author: Badr BADRI © pythops
-#
-
 set -e
 
 # Check if the user is not root
