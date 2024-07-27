@@ -1,0 +1,34 @@
+services:
+  yolo:
+    image: ghcr.io/kalanaratnayake/yolo-ros:humble
+    environment:
+      - YOLO_MODEL=yolov10x.pt
+      # - YOLO_MODEL=weights/yolov9t.pt            ---> for custom weights
+      - INPUT_RGB_TOPIC=/camera/color/image_raw
+      - INPUT_DEPTH_TOPIC=/camera/depth/points
+      - SUBSCRIBE_DEPTH=True
+      - PUBLISH_ANNOTATED_IMAGE=True
+      - ANNOTATED_TOPIC=/yolo_ros/annotated_image
+      - DETAILED_TOPIC=/yolo_ros/detection_result
+      - THRESHOLD=0.25
+      - DEVICE='0'
+    restart: unless-stopped
+    privileged: true
+    network_mode: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]   
+    volumes:
+      - type: volume              
+        source: yolo
+        target: /yolo
+      # - type: bind                              ---> for custom weights
+      #   source: ./weights
+      #   target: /yolo/weights
+
+volumes:
+  yolo:
