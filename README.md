@@ -4,12 +4,15 @@
 
 The development of minimalist images for Nvidia Jetson boards addresses the challenge posed by the large size and excessive pre-installed packages of official Jetson images. These packages often consume significant disk space and memory, which can be detrimental to performance in resource-constrained environments. These minimalist images aim to provide a streamlined alternative, optimizing both space and resource utilization.
 
-## Supported boards
+## Supported JETSON boards
 
-- ✅ Jetson Nano / Jetson Nano 2GB
-- ✅ Jetson Orin Nano
-- ✅ Jetson AGX Xavier
-- ✅ Jetson Xavier NX
+✅ Jetson Nano / Jetson Nano 2GB
+
+✅ Jetson Orin Nano
+
+✅ Jetson AGX Xavier
+
+✅ Jetson Xavier NX
 
 ## Specification
 
@@ -115,17 +118,19 @@ $ sudo apt install -y libcudnn8 libcudnn8-dev ...
 
 # Jetson Nano Docker
 
-This repository contains docker containers that are built on top of an modified [nvcr.io/nvidia/l4t-base:r32.7.1](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-base/tags) container. The container has been modified by upgrading core Ubuntu 18.04 to Ubuntu 20.04. 
+> [!NOTE]
+> This is an modified [nvcr.io/nvidia/l4t-base:r32.7.1](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-base/tags) container. The container has been modified by upgrading core **Ubuntu 18.04** to **Ubuntu 20.04**. 
 
-[dusty-nv/jetson-containers](https://github.com/dusty-nv/jetson-containers) allows building containers for Jetson nano but they are based on offical [nvcr.io/nvidia/l4t-base:r32.7.1](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-base/tags) which is based on Ubuntu 18.04 and is limited by Python 3.6.9. 
 
-Due to this, being inspired from [Qengineering/Jetson-Nano-Ubuntu-20-image](https://github.com/Qengineering/Jetson-Nano-Ubuntu-20-image) and based on [gpshead/Dockerfile](https://gist.github.com/gpshead/0c3a9e0a7b3e180d108b6f4aef59bc19), this container provides an Ubuntu 20.04 version of [nvcr.io/nvidia/l4t-base:r32.7.1](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-base/tags)
+> [!TIP]
+> [dusty-nv/jetson-containers](https://github.com/dusty-nv/jetson-containers) allows building containers for Jetson nano but they are based on offical [nvcr.io/nvidia/l4t-base:r32.7.1](https://catalog.ngc.nvidia.com/orgs/nvidia/containers/l4t-base/tags) which is based on Ubuntu 18.04 and is limited by Python 3.6.9. 
 
 > Ubuntu 22.04 was also attempted, but later abandoned due to lack of support for gcc-8, g++8 and clang-8 required by CUDA 10.2 in r32.7.1
 
+
 ## Docker buildx for ARM64 platform (for AMD64 systems)
 
-Run the following command on a AMD64 computer to setup buildx to build arm64 docker containers.
+Run the following command on an AMD64 computer to setup buildx to build arm64 docker containers:
 ```bash
 docker buildx create --use --driver-opt network=host --name MultiPlatform --platform linux/arm64
 ```
@@ -456,19 +461,25 @@ ros2 run demo_nodes_py listener
 
 ## Setup
 
-- **Power Supply:** 🔌 The Jetson Nano can be powered via a micro USB power supply (5V, 2A, 10W max), sufficient for operating a keyboard, mouse, and a small camera. For scenarios involving Neural Networks and depth cameras, it is recommended to use the DC barrel jack (5V, 4A, 20W max) for enhanced stability.
-  
-- **System Setup Comparison:** 🔍 This section outlines various combinations of Ubuntu and ROS2 tested with and without GUI, as well as with and without Docker. The goal was to identify a stable configuration that supports the latest ROS version and maximizes the performance of the Jetson Nano.
-
 ## System Setup Comparison
 
-- 🖥️  **GUI Availability**  the "GUI" column indicates whether a graphical user interface (GUI) is present. Configurations without a GUI were achieved by removing all GUI-related components. For guidance on removing the GUI, please refer to relevant tutorials.
+### Power Supply
 
-- 📊 **Idle RAM** measurements are provided to assess the maximum size of Neural Network models that can be loaded onto the device.
+- 🔌 **Micro USB Power Supply:** Provides 5V and up to 2A (10W maximum). This power configuration is adequate for basic peripherals such as a keyboard, mouse, and a small camera.
+- 🔋 **DC Barrel Jack Power Supply:** Provides 5V and up to 4A (20W maximum). This option is recommended for scenarios involving intensive tasks such as running Neural Networks or using depth cameras, as it ensures enhanced power stability and reliability.
 
-- 🐳 **Docker Configurations** in Docker-enabled setups, Idle RAM was measured while the base ROS Docker image was running.
+### Configuration Overview
 
-- ⚙️ **Overclocking Settings**  only the default overclocking settings were applied in the tests. For further customization, refer to the [overclocking guide](https://qengineering.eu/overclocking-the-jetson-nano.html).
+This section details various configurations of Ubuntu and ROS2, tested with and without a graphical user interface (GUI), as well as with and without Docker. The objective is to identify the most stable setup that supports the latest ROS version and optimizes the performance of the Jetson Nano.
+
+- 🖥️ **GUI Availability:** The "GUI" column specifies whether a graphical user interface is present in the configuration. Configurations without a GUI were achieved by removing all GUI-related components. For instructions on how to remove the GUI, refer to relevant tutorials.
+
+- 📊 **Idle RAM:** Measurements are provided to evaluate the maximum size of Neural Network models that can be accommodated on the device.
+
+- 🐳 **Docker Configurations:** In setups utilizing Docker, Idle RAM was measured while the base ROS Docker image was operational.
+
+- ⚙️ **Overclocking Settings:** Tests were conducted with the default overclocking settings. For information on customizing overclocking settings, please consult the [overclocking guide](https://qengineering.eu/overclocking-the-jetson-nano.html).
+
 
 
 - Docker ROS-Humble-ROS-Base can be installed with the following command:
@@ -624,8 +635,6 @@ Here is a summary of whether latest models work with yolo_ros node (in docker) o
 ### Conversion Formula
 
 To convert milliseconds *(ms)* to frames per second *(FPS)*, use the following formula:
-
-\[ \text{FPS} = \frac{1000}{\text{ms}} \]
 
 
 
