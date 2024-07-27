@@ -29,10 +29,6 @@ jobs:
 
       - name: Verify and Create Jetson image
         run: |
-          if [ ! -f ./create-image.sh ]; then
-            echo "create-image.sh not found!"
-            exit 1
-          fi
           chmod +x create-image.sh
           sudo -E ./create-image.sh
 
