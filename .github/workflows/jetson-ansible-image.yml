@@ -11,42 +11,57 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+      - name: List directory contents
+        run: ls -al
 
-    - name: Install Ansible and dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y ansible qemu-user-static binfmt-support
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
 
-    - name: Create Jetson image
-      run: |
-        chmod +x create-image.sh
-        ./create-image.sh
+      - name: Install Ansible and dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ansible qemu-user-static binfmt-support
 
-    - name: Flash Jetson image
-      run: |
-        chmod +x flash-image.sh
-        ./flash-image.sh
+      - name: Create Jetson image
+        run: |
+          if [ ! -f ./create-image.sh ]; then
+            echo "create-image.sh not found!"
+            exit 1
+          fi
+          chmod +x create-image.sh
+          sudo -E ./create-image.sh
 
-    - name: Run Ansible playbook
-      run: |
-        ansible-playbook -i ansible/hosts.yaml ansible/jetson.yaml
+      - name: Flash Jetson image
+        run: |
+          if [ ! -f ./flash-image.sh ]; then
+            echo "flash-image.sh not found!"
+            exit 1
+          fi
+          chmod +x flash-image.sh
+          sudo -E ./flash-image.sh
+
+      - name: Run Ansible playbook
+        run: |
+          ansible-playbook -i ansible/hosts.yaml ansible/jetson.yaml
 
   clean-up:
     runs-on: ubuntu-latest
     needs: build-jetson-image
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Clean up Jetson
-      run: |
-        chmod +x clean_jetson.sh
-        ./clean_jetson.sh
+      - name: Clean up Jetson
+        run: |
+          if [ ! -f ./clean_jetson.sh ]; then
+            echo "clean_jetson.sh not found!"
+            exit 1
+          fi
+          chmod +x clean_jetson.sh
+          sudo -E ./clean_jetson.sh
