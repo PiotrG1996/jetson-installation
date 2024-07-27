@@ -1,0 +1,103 @@
+FROM ubuntu:focal
+
+LABEL maintainer="Piotr Gapski"
+
+# Install systemd and update apt mirrors
+RUN apt update && \
+    apt install -y systemd && \
+    echo "deb http://ports.ubuntu.com/ubuntu-ports/ bionic main" >> /etc/apt/sources.list && \
+    apt update
+
+# Nvidia required packages
+RUN apt install -y \
+    libgles2 \
+    libpangoft2-1.0-0 \
+    libxkbcommon0 \
+    libwayland-egl1 \
+    libwayland-cursor0 \
+    libunwind8 \
+    libasound2 \
+    libpixman-1-0 \
+    libjpeg-turbo8 \
+    libinput10 \
+    libcairo2 \
+    device-tree-compiler \
+    iso-codes \
+    libffi6 \
+    libncursesw5 \
+    libdrm-common \
+    libdrm2 \
+    libegl-mesa0 \
+    libegl1 \
+    libegl1-mesa \
+    libgtk-3-0 \
+    python2 \
+    python-is-python2 \
+    libgstreamer1.0-0 \
+    libgstreamer-plugins-bad1.0-0 \
+    i2c-tools \
+    bridge-utils
+
+# Additional tools
+RUN apt install -y \
+    bash-completion \
+    build-essential \
+    btrfs-progs \
+    cmake \
+    curl \
+    dnsutils \
+    htop \
+    iotop \
+    isc-dhcp-client \
+    iputils-ping \
+    kmod \
+    linux-firmware \
+    locales \
+    net-tools \
+    netplan.io \
+    pciutils \
+    python3-dev \
+    ssh \
+    sudo \
+    udev \
+    unzip \
+    usbutils \
+    neovim \
+    wpasupplicant \
+    parted \
+    gdisk \
+    e2fsprogs \
+    mtd-utils
+
+# Install tegratop
+RUN wget -q https://github.com/pythops/tegratop/releases/latest/download/tegratop-linux-arm64 -O /usr/local/bin/tegratop && \
+    chmod +x /usr/local/bin/tegratop
+
+# Resize the rootfs
+COPY scripts/resizerootfs.sh /usr/local/bin
+COPY scripts/resizerootfs.service /lib/systemd/system
+
+# Generate locales
+RUN locale-gen en_US.UTF-8
+
+# Network configuration
+COPY config/netcfg.yaml /etc/netplan/netcfg.yaml
+
+# Enable services at startup
+RUN systemctl enable resizerootfs.service && \
+    systemctl enable systemd-timesyncd
+
+# New user
+# username: jetson
+# password: jetson
+RUN useradd \
+    --create-home \
+    -G sudo,video,audio \
+    -p $(openssl passwd -6 jetson) \
+    -s /bin/bash \
+    jetson
+
+# Add /usr/local/cuda/bin to the PATH
+RUN echo "if [ -d \"/usr/local/cuda/bin\" ] ; then" >> /home/jetson/.profile && \
+    echo "  PATH=\"/usr/local/cuda/bin:\$PATH\"" >> /home/jetson/.profile && \
+    echo "fi" >> /home/jetson/.profile
