@@ -1,4 +1,4 @@
-name: jetson-nano-standard-img
+name: CI
 
 on:
   push:
@@ -21,8 +21,16 @@ jobs:
       JETSON_BUILD_DIR: /tmp/jetson-builder/build
       JETSON_NANO_BOARD: ${{ matrix.board }}
       JETSON_NANO_REVISION: ${{ matrix.revision }}
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Verify script presence
+        run: |
+          if [ ! -f ./create-image.sh ]; then
+            echo "create-image.sh not found!"
+            exit 1
+          fi
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -36,10 +44,15 @@ jobs:
           docker rm nano-rootfs
           mkdir -p /tmp/jetson-builder/rootfs
           sudo tar --same-owner -xf rootfs.tar -C /tmp/jetson-builder/rootfs
-      - name: Create jetson.img
+
+      - name: Install dependencies
+        run: sudo apt-get update && sudo apt-get install -y wget patch
+
+      - name: Make script executable and run it
         run: |
-          sudo apt install -y libxml2-utils
+          chmod +x ./create-image.sh
           sudo -E ./create-image.sh
+
       - name: Upload image
         uses: actions/upload-artifact@v3
         with:
