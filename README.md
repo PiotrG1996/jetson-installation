@@ -640,9 +640,11 @@ ros2 launch yolo_ros yolo.launch.py
 | threshold               | THRESHOLD               | `0.25`                      | Confidence threshold for predictions |
 | device                  | DEVICE                  | `'0'`                       | `cpu` for CPU, `0` for gpu, `0,1,2,3` if there are multiple GPUs |
 
-[1] If the model is available at [ultralytics models](https://docs.ultralytics.com/models/), It will be downloaded from the cloud at the startup. We are using docker volumes to maintain downloaded weights so that weights are not downloaded at each startup.
+> [!NOTE]
+> If the model is available at [ultralytics models](https://docs.ultralytics.com/models/), It will be downloaded from the cloud at the startup. We are using docker volumes to maintain downloaded weights so that weights are not downloaded at each startup.
 
-[2] Uncomment the commented out `YOLO_MODEL` parameter line and give the custom model weight file's name as `YOLO_MODEL` parameter. Uncomment the docker bind entry that to direct to the `weights` folder and comment the docker volume entry for yolo. Copy the custom weights to the `weights` folder.
+> [!TIP]
+> Uncomment the commented out `YOLO_MODEL` parameter line and give the custom model weight file's name as `YOLO_MODEL` parameter. Uncomment the docker bind entry that to direct to the `weights` folder and comment the docker volume entry for yolo. Copy the custom weights to the `weights` folder.
 
 ## Latency description
 
@@ -668,12 +670,6 @@ Here is a summary of whether latest models work with yolo_ros node (in docker) o
 | `yolov8m.pt`  | 700 ms           | 1.43 FPS          |
 | `yolov8s.pt`  | 300 ms           | 3.33 FPS          |
 | `yolov8n.pt`  | 140 ms           | 7.14 FPS          |
-
-### Conversion Formula
-
-To convert milliseconds *(ms)* to frames per second *(FPS)*, use the following formula:
-
-
 
 
 
