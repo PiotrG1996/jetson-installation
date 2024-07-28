@@ -30,7 +30,7 @@
      - [🧩 On Jetson Nano](#on-jetson-nano)
    - [⚙️ Native Usage](#native-usage)
    - [🔍 Parameter Description](#parameter-description)
-10. [📖 How to Use Jetson Copilot](#how-to-use-jetson-copilot)
+10. [📖 How to Use Jetson Copilot](#Jetson-Copilot-Offline-Setup-Guide)
     - [🔍 Interact with the Plain Llama3 (8 Billion Parameters)](#interact-with-the-plain-llama3-8-billion-parameters)
     - [❓ Ask Jetson-Related Questions Using Pre-Built Index](#ask-jetson-related-questions-using-pre-built-index)
     - [🛠️ Build Your Own Index Based on Your Documents](#build-your-own-index-based-on-your-documents)
