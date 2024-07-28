@@ -41,7 +41,7 @@
 
 The development of minimalist images for Nvidia Jetson boards addresses the challenge posed by the large size and excessive pre-installed packages of official Jetson images. These packages often consume significant disk space and memory, which can be detrimental to performance in resource-constrained environments. These minimalist images aim to provide a streamlined alternative, optimizing both space and resource utilization.
 
-## Supported JETSON boards
+## Supported JETSON boards [official source](https://developer.nvidia.com/embedded/downloads/#?tx=$product,jetson_nano)
 
 ✅ Jetson Nano / Jetson Nano 2GB
 
