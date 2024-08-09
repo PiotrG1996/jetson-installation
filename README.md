@@ -1,5 +1,8 @@
 # Nvidia Jetson with ROS for Computer Vision
 
+[![Build Jetson Images](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-standard-images.yml/badge.svg)](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-standard-images.yml)
+[![Build and Deploy Jetson Image](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-ansible-image.yml/badge.svg)](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-ansible-image.yml)
+[![ROS Humble YOLO Jetson Nano](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-ROS-YOLO.yml/badge.svg)](https://github.com/PiotrG1996/jetson-installation/actions/workflows/jetson-ROS-YOLO.yml)
 
 ## Table of Contents
 
