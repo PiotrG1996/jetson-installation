@@ -814,3 +814,9 @@ Here's an overview of the directory structure:
         ├── build_index.py
         └── download_model.py
 ```
+
+## References
+Here are the references and resources used in the project:
+
+1. Qengineering - [Link to GitHub](https://github.com/Qengineering/Jetson-Nano-Ubuntu-20-image)
+2. Pythops - [Link to GitHub](https://github.com/pythops/jetson-image)
