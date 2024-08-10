@@ -4,7 +4,7 @@
 # Install the latest version of Visual Studio Code for Ubuntu 18.04 on Jetson Nano
 
 # Log file
-LOGFILE="install_vscode.log"
+LOGFILE="install_vscode_server.log"
 
 # Function to print status messages
 echo_status() {
@@ -31,18 +31,6 @@ if [[ $EUID -ne 0 ]]; then
    exit 1
 fi
 
-# Add the Microsoft repository
-echo_status "Adding Microsoft repository..."
-sudo apt-get update
-sudo apt-get install -y wget gpg
-wget -qO- https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-sudo sh -c 'echo "deb [arch=arm64] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
-if [ $? -ne 0 ]; then
-  echo_error "Failed to add Microsoft repository."
-  show_last_log_lines
-  exit 1
-fi
-
 # Update package list
 echo_status "Updating package list..."
 sudo apt-get update
@@ -52,58 +40,33 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Install Visual Studio Code
-echo_status "Installing Visual Studio Code..."
-sudo apt-get install -y code
+# Install required packages
+echo_status "Installing required packages..."
+sudo apt-get install -y curl wget gnupg
 if [ $? -ne 0 ]; then
-  echo_error "Failed to install Visual Studio Code."
+  echo_error "Failed to install required packages."
   show_last_log_lines
   exit 1
 fi
 
-# Check if VS Code was installed successfully
-if ! command -v code &> /dev/null; then
-  echo_error "Visual Studio Code installation failed. 'code' command not found."
-  show_last_log_lines
-  exit 1
-else
-  echo_status "Visual Studio Code installed successfully."
-fi
-
-# Install Python3 and pip3
-echo_status "Installing Python3 and pip3..."
-sudo apt-get install -y python3-pip
+# Install VS Code Server
+echo_status "Installing VS Code Server..."
+mkdir -p ~/.cache/code-server
+curl -#fL -o ~/.cache/code-server/code-server_4.91.1_arm64.deb https://github.com/coder/code-server/releases/download/v4.91.1/code-server_4.91.1_arm64.deb
+sudo dpkg -i ~/.cache/code-server/code-server_4.91.1_arm64.deb
 if [ $? -ne 0 ]; then
-  echo_error "Failed to install Python3 or pip3."
+  echo_error "Failed to install VS Code Server."
   show_last_log_lines
   exit 1
 fi
 
-# Install Python linter (pylint)
-echo_status "Installing pylint..."
-pip3 install pylint
+# Enable and start the VS Code Server service
+echo_status "Starting VS Code Server..."
+sudo systemctl enable --now code-server@$USER
 if [ $? -ne 0 ]; then
-  echo_error "Failed to install pylint."
+  echo_error "Failed to start or enable VS Code Server service."
   show_last_log_lines
   exit 1
 fi
 
-# Install Python formatter (black)
-echo_status "Installing black..."
-pip3 install black
-if [ $? -ne 0 ]; then
-  echo_error "Failed to install black."
-  show_last_log_lines
-  exit 1
-fi
-
-# Install the Python extension for Visual Studio Code
-echo_status "Installing Python extension for Visual Studio Code..."
-code --install-extension ms-python.python --force
-if [ $? -ne 0 ]; then
-  echo_error "Failed to install the Python extension for Visual Studio Code."
-  show_last_log_lines
-  exit 1
-fi
-
-echo_status "Visual Studio Code and Python tools installation completed successfully."
+echo_status "VS Code Server installation and configuration completed successfully."
