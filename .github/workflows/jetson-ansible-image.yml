@@ -27,6 +27,12 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ansible qemu-user-static binfmt-support
 
+      - name: Set environment variables
+        run: |
+          echo "JETSON_ROOTFS_DIR=/path/to/rootfs" >> $GITHUB_ENV
+          echo "JETSON_BUILD_DIR=/path/to/build" >> $GITHUB_ENV
+          echo "JETSON_NANO_BOARD=jetson-nano-2gb" >> $GITHUB_ENV
+
       - name: Verify and Create Jetson image
         run: |
           chmod +x create-image.sh
