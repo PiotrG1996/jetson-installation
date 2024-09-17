@@ -1,3 +1,4 @@
+
 #!/bin/bash
 
 # Color codes for output
@@ -33,8 +34,12 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Get the device's IP address
-IP_ADDR=$(hostname -I | awk '{print $1}')
+# Get the device's current IP address
+DEVICE_IP=$(hostname -I | awk '{print $1}')
+if [ -z "$DEVICE_IP" ]; then
+    warn "Unable to detect IP address. Using <your-device-ip> as placeholder."
+    DEVICE_IP="<your-device-ip>"
+fi
 
 # Update the package list
 info "Updating package list..."
@@ -102,5 +107,5 @@ docker ps
 
 # Print success message with access info
 echo -e "${GREEN}[SUCCESS] Installation completed.${NC}"
-echo -e "${GREEN}You can access Portainer at: http://$IP_ADDR:9000${NC}"
-echo -e "${GREEN}You can access Home Assistant at: http://$IP_ADDR:8123${NC}"
+echo -e "${GREEN}You can access Portainer at: http://$DEVICE_IP:9000${NC}"
+echo -e "${GREEN}You can access Home Assistant at: http://$DEVICE_IP:8123${NC}"
