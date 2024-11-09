@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# Script to install VS Code CLI for ARM64 and run SSH Tunnel
-# https://github.com/device/login -> Add here generated CODE to access SSH Tunnel
-
 # Function to install VS Code CLI for ARM64
 install_vscode_cli() {
     echo "Downloading VS Code CLI for ARM64..."
@@ -18,10 +15,45 @@ install_vscode_cli() {
 create_secure_tunnel() {
     echo "Starting VS Code Server and creating a secure tunnel..."
     
-    # Run the tunnel command
+    # Run the tunnel command (replace with actual location of the 'code' binary)
     ./code tunnel --accept-server-license-terms
     
     echo "Tunnel is running. You can access it using the provided URL."
+}
+
+# Function to create systemd service for the VS Code tunnel
+create_systemd_service() {
+    echo "Creating systemd service for VS Code tunnel..."
+
+    # Create the systemd service file
+    cat > /etc/systemd/system/vscode-tunnel.service <<EOF
+[Unit]
+Description=VS Code Secure Tunnel
+After=network.target
+
+[Service]
+Type=simple
+User=$(whoami)  # Use the current user
+WorkingDirectory=$(pwd)  # Set working directory to the current directory
+ExecStart=$(pwd)/install.sh  # Full path to the install script
+Restart=always  # Restart the service if it fails
+Environment=GITHUB_TOKEN=your_personal_access_token  # Replace with your actual GitHub token
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    # Reload systemd to apply the changes
+    echo "Reloading systemd manager..."
+    sudo systemctl daemon-reload
+
+    # Enable and start the service
+    echo "Enabling and starting the VS Code tunnel service..."
+    sudo systemctl enable vscode-tunnel.service
+    sudo systemctl start vscode-tunnel.service
+
+    echo "VS Code tunnel service is now running."
 }
 
 # Main script execution
@@ -30,80 +62,10 @@ echo "Starting the installation of VS Code CLI for ARM64..."
 # Install VS Code CLI
 install_vscode_cli
 
-# Create secure tunnel
+# Create secure tunnel (for immediate use, can be skipped since service will handle it)
 create_secure_tunnel
 
+# Create the systemd service to keep the tunnel open
+create_systemd_service
 
-
-
-
-# # Function to get the default IP address
-# get_default_ip() {
-#   ip route get 1 | awk '{print $7; exit}'
-# }
-
-# # Function to get the current username
-# get_current_user() {
-#   whoami
-# }
-
-# # Get default IP address and current username
-# default_ip=$(get_default_ip)
-# current_user=$(get_current_user)
-
-# # Display default values to the user
-# echo "Default IP Address: $default_ip"
-# echo "Default Username: $current_user"
-
-# # Prompt for SSH server details
-# read -p "Enter SSH server hostname or IP address (default: $default_ip): " remote_host
-# remote_host=${remote_host:-$default_ip}
-
-# read -p "Enter SSH server username (default: $current_user): " username
-# username=${username:-$current_user}
-
-# # Prompt for local and remote port numbers
-# read -p "Enter local port to use for tunnel (e.g., 8080): " local_port
-# read -p "Enter remote port on SSH server (e.g., 80): " remote_port
-
-# # Establish SSH tunnel
-# echo "Establishing SSH tunnel to $remote_host as user $username..."
-# ssh -N -L "$local_port:localhost:$remote_port" "$username@$remote_host" &
-# echo "SSH tunnel established. You can now access remote service at localhost:$local_port."
-
-# # Instructions for creating a systemd service for the SSH tunnel
-# echo "To create a systemd service for this tunnel, follow these steps:"
-
-# # Generate SSH key (if needed)
-# echo "Generating SSH key (if needed)..."
-# ssh-keygen -t rsa -b 4096
-
-# # Create systemd service file
-# echo "Creating systemd service file..."
-# cat <<EOF | sudo tee /etc/systemd/system/ssh-tunnel.service
-# [Unit]
-# Description=SSH Tunnel Service
-# After=network.target
-
-# [Service]
-# User=$username
-# Environment="LOCAL_PORT=$local_port"
-# Environment="REMOTE_HOST=$remote_host"
-# Environment="REMOTE_PORT=$remote_port"
-# ExecStart=/usr/bin/ssh -N -L \$LOCAL_PORT:localhost:\$REMOTE_PORT \$USER@\$REMOTE_HOST
-# Restart=always
-# RestartSec=3
-
-# [Install]
-# WantedBy=multi-user.target
-# EOF
-
-# # Reload systemd and enable the service
-# echo "Reloading systemd and enabling the SSH tunnel service..."
-# sudo systemctl daemon-reload
-# sudo systemctl enable ssh-tunnel.service
-# sudo systemctl start ssh-tunnel.service
-
-# # Check the status of the service
-# echo "Checking the status of the SSH tunnel service..."
-# sudo systemctl status ssh-tunnel.service
+echo "Installation and service setup complete."
