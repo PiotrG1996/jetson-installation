@@ -1,12 +1,29 @@
 #!/bin/bash
 
+# Function to install dependencies
+install_dependencies() {
+    echo "Installing required dependencies..."
+    sudo apt-get update
+    sudo apt-get install -y curl tar
+}
+
 # Function to install VS Code CLI for ARM64
 install_vscode_cli() {
     echo "Downloading VS Code CLI for ARM64..."
     curl -Lk 'https://code.visualstudio.com/sha/download?build=stable&os=cli-alpine-arm64' --output vscode_cli.tar.gz
     
+    if [ ! -f vscode_cli.tar.gz ]; then
+        echo "Error: Failed to download VS Code CLI."
+        exit 1
+    fi
+
     echo "Extracting VS Code CLI..."
     tar -xf vscode_cli.tar.gz
+
+    if [ ! -f code ]; then
+        echo "Error: Failed to extract VS Code CLI."
+        exit 1
+    fi
 
     echo "VS Code CLI installation complete."
 }
@@ -15,9 +32,14 @@ install_vscode_cli() {
 create_secure_tunnel() {
     echo "Starting VS Code Server and creating a secure tunnel..."
     
-    # Run the tunnel command (replace with actual location of the 'code' binary)
+    # Run the tunnel command
     ./code tunnel --accept-server-license-terms
     
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to start VS Code tunnel."
+        exit 1
+    fi
+
     echo "Tunnel is running. You can access it using the provided URL."
 }
 
@@ -35,7 +57,7 @@ After=network.target
 Type=simple
 User=$(whoami)  # Use the current user
 WorkingDirectory=$(pwd)  # Set working directory to the current directory
-ExecStart=$(pwd)/install.sh  # Full path to the install script
+ExecStart=$(pwd)/code tunnel --accept-server-license-terms  # Full path to the code binary
 Restart=always  # Restart the service if it fails
 Environment=GITHUB_TOKEN=your_personal_access_token  # Replace with your actual GitHub token
 TimeoutSec=300
@@ -53,11 +75,19 @@ EOF
     sudo systemctl enable vscode-tunnel.service
     sudo systemctl start vscode-tunnel.service
 
+    if [ $? -ne 0 ]; then
+        echo "Error: Failed to start VS Code tunnel service."
+        exit 1
+    fi
+
     echo "VS Code tunnel service is now running."
 }
 
 # Main script execution
 echo "Starting the installation of VS Code CLI for ARM64..."
+
+# Install dependencies
+install_dependencies
 
 # Install VS Code CLI
 install_vscode_cli
