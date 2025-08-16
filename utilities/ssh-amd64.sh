@@ -31,8 +31,6 @@ install_vscode_cli() {
 # Function to create a secure tunnel with VS Code Server
 create_secure_tunnel() {
     echo "Starting VS Code Server and creating a secure tunnel..."
-
-    # Run the tunnel command
     ./code tunnel --accept-server-license-terms
 
     if [ $? -ne 0 ]; then
@@ -46,24 +44,35 @@ create_secure_tunnel() {
 # Function to create systemd service for the VS Code tunnel
 create_systemd_service() {
     echo "Creating systemd service for VS Code tunnel..."
-
+    
+    # Get the current user and directory
+    local SERVICE_USER=$(whoami)
+    local WORKING_DIR=$(pwd)
+    
     # Create the systemd service file
-    cat > /etc/systemd/system/vscode-tunnel.service <<EOF
+    sudo bash -c "cat > /etc/systemd/system/vscode-tunnel.service <<EOF
 [Unit]
 Description=VS Code Secure Tunnel
 After=network.target
 
 [Service]
 Type=simple
-User=$(whoami)
-WorkingDirectory=$(pwd)
-ExecStart=$(pwd)/code tunnel --accept-server-license-terms
+User=$SERVICE_USER
+WorkingDirectory=$WORKING_DIR
+ExecStart=$WORKING_DIR/code tunnel --accept-server-license-terms
 Restart=always
-TimeoutSec=300
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=vscode-tunnel
+
+# Give the service reasonable time to start/shutdown
+TimeoutStartSec=300
+TimeoutStopSec=30
 
 [Install]
 WantedBy=multi-user.target
-EOF
+EOF"
 
     # Reload systemd to apply the changes
     echo "Reloading systemd manager..."
@@ -80,6 +89,7 @@ EOF
     fi
 
     echo "VS Code tunnel service is now running."
+    echo "You can check its status with: systemctl status vscode-tunnel"
 }
 
 # Main script execution
@@ -91,10 +101,8 @@ install_dependencies
 # Install VS Code CLI
 install_vscode_cli
 
-# Create secure tunnel (for immediate use, can be skipped since service will handle it)
-create_secure_tunnel
-
 # Create the systemd service to keep the tunnel open
 create_systemd_service
 
 echo "Installation and service setup complete."
+echo "The VS Code tunnel will automatically start on system boot."
