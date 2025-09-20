@@ -1,5 +1,42 @@
 # Nvidia Jetson with ROS for Computer Vision
 
+
+## Table of Contents
+
+1. [🚀 Nvidia Jetson Boards - Motivation](#nvidia-jetson-boards---motivation)
+2. [🛠️ Supported JETSON Boards](#supported-jetson-boards)
+3. [📋 Specification](#specification)
+4. [🔨 Build the Jetson Image Yourself](#build-the-jetson-image-yourself)
+5. [💾 Flashing the Image into Your Board](#flashing-the-image-into-your-board)
+6. [📚 Nvidia Libraries](#nvidia-libraries)
+7. [🐳 Jetson Nano Docker](#jetson-nano-docker)
+   - [🔧 Docker buildx for ARM64 Platform (for AMD64 Systems)](#docker-buildx-for-arm64-platform-for-amd64-systems)
+   - [📜 Docker Container List](#docker-container-list)
+     - [🌟 Jetson Ubuntu Foxy Base Image](#jetson-ubuntu-foxy-base-image)
+     - [🧩 Jetson Ubuntu Foxy Minimal Image](#jetson-ubuntu-foxy-minimal-image)
+     - [🔬 Jetson ROS Humble Core Image](#jetson-ros-humble-core-image)
+     - [🔲 Jetson ROS Humble Base Image](#jetson-ros-humble-base-image)
+     - [📈 Jetson Ubuntu Foxy Pytorch 1.13 Image](#jetson-ubuntu-foxy-pytorch-113-image)
+     - [⚙️ Jetson Ubuntu Foxy Pytorch 1.13 with TensorRT Image](#jetson-ubuntu-foxy-pytorch-113-with-tensorrt-image)
+     - [🔧 Jetson Ubuntu Foxy Humble Core Pytorch 1.13 Image](#jetson-ubuntu-foxy-humble-core-pytorch-113-image)
+8. [🤖 Jetson Nano with ROS2](#jetson-nano-with-ros2)
+   - [🔧 Setup](#setup)
+   - [⚖️ System Setup Comparison](#system-setup-comparison)
+9. [🧠 Jetson ROS2 with YOLO](#jetson-ros2-with-yolo)
+   - [📜 Docker Usage by Adding to compose.yml File](#docker-usage-by-adding-to-composeyml-file)
+     - [🔍 Supported Platforms](#supported-platforms)
+   - [🔧 Docker Usage with This Repository](#docker-usage-with-this-repository)
+     - [💻 On AMD64](#on-amd64)
+     - [🧩 On Jetson Nano](#on-jetson-nano)
+   - [⚙️ Native Usage](#native-usage)
+   - [🔍 Parameter Description](#parameter-description)
+10. [📖 How to Use Jetson Copilot](#how-to-use-jetson-copilot)
+    - [🔍 Interact with the Plain Llama3 (8 Billion Parameters)](#interact-with-the-plain-llama3-8-billion-parameters)
+    - [❓ Ask Jetson-Related Questions Using Pre-Built Index](#ask-jetson-related-questions-using-pre-built-index)
+    - [🛠️ Build Your Own Index Based on Your Documents](#build-your-own-index-based-on-your-documents)
+    - [🔬 Test Different LLM or Embedding Models](#test-different-llm-or-embedding-models)
+
+
 ## Nvidia Jetson Boards - motivation
 
 The development of minimalist images for Nvidia Jetson boards addresses the challenge posed by the large size and excessive pre-installed packages of official Jetson images. These packages often consume significant disk space and memory, which can be detrimental to performance in resource-constrained environments. These minimalist images aim to provide a streamlined alternative, optimizing both space and resource utilization.
@@ -638,6 +675,8 @@ To convert milliseconds *(ms)* to frames per second *(FPS)*, use the following f
 
 
 
+
+
 # Jetson Copilot Offline Setup Guide
 
 
@@ -693,7 +732,7 @@ This command will start a Docker container, which will then start an Ollama serv
 
 ## 📖 How to Use Jetson Copilot
 
-### 0. Interact with the Plain Llama3 (8b)
+###  Interact with the Plain Llama3 (8 billion parameters)
 
 By default, Jetson Copilot uses the Llama3 (8b) model as the default LLM. You can interact with this model without enabling the RAG (Retrieve and Generate) feature.
 
